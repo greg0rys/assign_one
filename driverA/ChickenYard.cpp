@@ -17,6 +17,33 @@ ChickenYard::ChickenYard():boneYard(nullptr), boneCount(0), shuffled(false)
 	
 }
 
+ChickenYard::~ChickenYard()
+{
+    destroy();
+}
+
+
+void ChickenYard::destroy()
+{
+    for(auto i = 0; i < boneCount; i++)
+    {
+        destroy(boneYard[i]);
+    }
+
+    if(boneYard)
+        delete []boneYard;
+
+    boneYard = nullptr;
+}
+
+
+void ChickenYard::destroy(Bone * aBone)
+{
+    if(!aBone)
+        return;
+    destroy(aBone)
+}
+
 ChickenYard::ChickenYard(const ChickenYard &aYard):boneYard(nullptr),boneCount(0),shuffled(false)
 {
 	*this = aYard;
