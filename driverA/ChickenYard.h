@@ -14,18 +14,48 @@ public:
 
     void generateYard();
 	void destroy();
-    void shuffleBones(Bone **);
+    void shuffleBones();
 	void getRemainingBones(int &);
 	void draw();
 
 
 private:
-    Bone ** boneYard;
-    int boneCount;
+
+    struct node
+    {
+        Bone * data;
+        node * next;
+
+        node()
+        {
+            data = nullptr;
+            next = nullptr;
+        }
+
+        node(const Bone &aBone)
+        {
+            if(data)
+                delete data;
+            data = new Bone(aBone);
+            next = nullptr;
+        }
+
+        ~node()
+        {
+            if(data)
+                delete data;
+            data = nullptr;
+            next = nullptr;
+        }
+    };
+
+    node * boneYard;
+    static int boneCount;
 	bool shuffled;
 	const static int INIT_SIZE = 52;
-	void destroy(Bone *);
+	void destroy(node *&);
 	void copyChain(Bone *&, Bone *);
-    void generateYard(Bone **, int &)
+    void generateYard(node *&, node *&, int &);
+    void shuffleBones(node *&);
 
 };

@@ -3,11 +3,10 @@
 //
 #include "ChickenYard.h"
 
-ChickenYard::ChickenYard():boneYard(nullptr), boneCount(0), shuffled(false)
+ChickenYard::ChickenYard():boneYard(nullptr), shuffled(false)
 {
 
-	for(auto x = 0; x < INIT_SIZE; x++)
-		boneYard[x] = nullptr;
+
     generateYard();
 	boneCount = INIT_SIZE;
 	shuffleBones(boneYard);
@@ -18,14 +17,25 @@ ChickenYard::ChickenYard():boneYard(nullptr), boneCount(0), shuffled(false)
 void ChickenYard::generateYard()
 {
     int counter = 0;
-    generateYard(boneYard, counter);
+    generateYard(boneYard, boneYard, counter);
 }
 
-void ChickenYard::generateYard(Bone ** bones, int & counter)
+void ChickenYard::generateYard(node *& curr, node *& prev, int & counter)
 {
     if(counter == INIT_SIZE)
         return;
 
+    if(!curr)
+    {
+        curr = new node();
+        curr->data = new Bone();
+        curr->next = nullptr;
+        generateYard(curr->next, curr, ++counter);
+    }
+    else
+    {
+        return;
+    }
 }
 
 ChickenYard::~ChickenYard()
@@ -34,25 +44,23 @@ ChickenYard::~ChickenYard()
 }
 
 
+/**
+ * Deallocate dynamic memory allocations
+ */
 void ChickenYard::destroy()
 {
-    for(auto i = 0; i < boneCount; i++)
-    {
-        destroy(boneYard[i]);
-    }
-
-    if(boneYard)
-        delete []boneYard;
-
+    destroy(boneYard);
     boneYard = nullptr;
+
 }
 
 
-void ChickenYard::destroy(Bone * aBone)
+void ChickenYard::destroy(node *& aBone)
 {
     if(!aBone)
         return;
-    destroy(aBone);
+    destroy(aBone->next);
+    delete aBone;
 }
 
 ChickenYard::ChickenYard(const ChickenYard &aYard):boneYard(nullptr),boneCount(0),shuffled(false)
@@ -67,6 +75,7 @@ ChickenYard& ChickenYard::operator=(const ChickenYard & aYard)
 	
 	if(boneYard)
 		destroy();
+
 	boneCount = aYard.boneCount;
 	shuffled = aYard.shuffled;
 
@@ -100,7 +109,12 @@ void ChickenYard::copyChain(Bone *& boneA, Bone * boneB)
 }
 
 
-void ChickenYard::shuffleBones(Bone **)
+void ChickenYard::shuffleBones()
+{
+
+}
+
+void ChickenYard::shuffleBones(ChickenYard::node *& yard)
 {
 
 }
