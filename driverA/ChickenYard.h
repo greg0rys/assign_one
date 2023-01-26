@@ -12,10 +12,12 @@ public:
     ~ChickenYard();
 	ChickenYard& operator=(const ChickenYard &);
 
+    void generateYard();
 	void destroy();
     void shuffleBones(Bone **);
 	void getRemainingBones(int &);
 	void draw();
+
 
 private:
     Bone ** boneYard;
@@ -23,6 +25,7 @@ private:
 	bool shuffled;
 	const static int INIT_SIZE = 52;
 	void destroy(Bone *);
-	void copyChain(Bone *, Bone *);
+	void copyChain(Bone *&, Bone *);
+    void generateYard(Bone **, int &)
 
 };
