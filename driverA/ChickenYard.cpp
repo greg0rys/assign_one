@@ -38,6 +38,26 @@ void ChickenYard::generateYard(node *& curr, node *& prev, int & counter)
     }
 }
 
+// always use a temp copy of the list to iterate or it will change the value
+// of the head of the list. if we use the actual head pointer then we will
+// advance it causing seg faults at some point.
+ChickenYard::node* ChickenYard::getEnd()
+{
+    // make sure all functions that get a return value from here check to be
+    // sure that they're not trying to operate on a nullptr;
+    // EX: temp = getEnd() If(!temp) *do return* else do operation
+    if(!boneYard)
+        return nullptr;
+
+    node * temp = boneYard;
+    for(auto i = 0; i < boneCount; i++)
+    {
+        temp = temp->next;
+    }
+
+    return temp;
+}
+
 ChickenYard::~ChickenYard()
 {
     destroy();
@@ -103,15 +123,16 @@ void ChickenYard::copyChain(Bone *& boneA, Bone * boneB)
         boneA = nullptr;
     }
 
-    boneA = new Bone();
     boneA = boneB;
 
 }
 
-
+// can we not create these methods? Lets check and see if
+// the random number generation can be used as the shuffle. email professor.
 void ChickenYard::shuffleBones()
 {
-
+    node * temp = nullptr;
+    shuffleBones
 }
 
 void ChickenYard::shuffleBones(ChickenYard::node *& yard)

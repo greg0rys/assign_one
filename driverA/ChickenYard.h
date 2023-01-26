@@ -24,12 +24,12 @@ private:
     struct node
     {
         Bone * data;
-        node * next;
+        node * next, *prev;
 
         node()
         {
             data = nullptr;
-            next = nullptr;
+            next = prev = nullptr;
         }
 
         node(const Bone &aBone)
@@ -37,7 +37,7 @@ private:
             if(data)
                 delete data;
             data = new Bone(aBone);
-            next = nullptr;
+            next = prev = nullptr;
         }
 
         ~node()
@@ -49,7 +49,9 @@ private:
         }
     };
 
+    // this will become a doubly linked circular linked list
     node * boneYard;
+    node * end; // a pointer to keep track of the last node in our list
     static int boneCount;
 	bool shuffled;
 	const static int INIT_SIZE = 52;
@@ -57,5 +59,6 @@ private:
 	void copyChain(Bone *&, Bone *);
     void generateYard(node *&, node *&, int &);
     void shuffleBones(node *&);
+    node * getEnd();
 
 };
