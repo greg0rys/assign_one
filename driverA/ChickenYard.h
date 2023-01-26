@@ -52,7 +52,7 @@ private:
     // this will become a doubly linked circular linked list
     node * boneYard;
     node * end; // a pointer to keep track of the last node in our list
-    static int boneCount;
+    static int boneCount; /* don't let this stay static remove it */
 	bool shuffled;
 	const static int INIT_SIZE = 52;
 	void destroy(node *&);
