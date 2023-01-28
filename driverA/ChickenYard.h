@@ -3,25 +3,13 @@
 #include<cstdlib>
 #include <array>
 #include <algorithm>
+#include <random>
 #include "Bone.h"
 
 using namespace std;
 
 class ChickenYard
 {
-public:
-    ChickenYard();
-    ChickenYard(const ChickenYard &);
-    ~ChickenYard();
-	ChickenYard& operator=(const ChickenYard &);
-
-    bool isEmpty() const;
-    void generateYard();
-	void destroy();
-    void shuffleBones();
-	void getRemainingBones(int &);
-	void draw();
-
 
 private:
 
@@ -54,15 +42,31 @@ private:
     };
 
 
+    const static int INIT_SIZE = 52;
+
+    std::array<Bone,INIT_SIZE> yardArray;
     node * boneYard;
-    int boneCount; /* don't let this stay static remove it */
+    int boneCount;
 	bool shuffled;
-	const static int INIT_SIZE = 52;
 	void destroy(node *&);
 	void copyChain(node *&, node *);
-    void generateYard(node *&, node *&, int &);
-    void shuffleBones(node *&);
-    node * getEnd();
-    std::array<node,INIT_SIZE> makeArray(node *);
+    void generateYard(node *&, std::array<Bone,INIT_SIZE> &, int &);
+    void printYardArr();
+    int getCount(node *) const;
+    std::array<Bone,INIT_SIZE> makeArray() const;
+
+public:
+    ChickenYard();
+    ChickenYard(const ChickenYard &);
+    ~ChickenYard();
+    ChickenYard& operator=(const ChickenYard &);
+    ChickenYard& operator=(const std::array<node,52> &);
+
+    bool isEmpty() const;
+    void generateYard();
+    void destroy();
+    void shuffleBones();
+    int getCount();
+    void draw();
 
 };

@@ -15,6 +15,13 @@ public:
     Bone& operator=(const Bone &);
     void generateNumbers(int *&);
 
+    int getSideA() const {
+     return *sideA;
+    }
+    int getSideB() const {
+        return *sideB;
+    }
+
 private:
     int * sideA, * sideB;
 

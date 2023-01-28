@@ -1,74 +1,137 @@
-//
-// Created by shene on 1/13/2023.
-//
-#include <algorithm>
-#include <array>
-#include <random>
+/**
+ * ChickenYard.cpp the implementation file for ChickenYard.h
+ * @author Greg Shenefelt
+ * @version 0.0.4
+ */
 #include "ChickenYard.h"
 
-ChickenYard::ChickenYard():boneYard(nullptr), shuffled(false)
+// default constructor
+ChickenYard::ChickenYard():boneYard(nullptr), boneCount(INIT_SIZE), shuffled
+(false)
 {
 
 
-    generateYard();
-	boneCount = INIT_SIZE;
-	shuffleBones(boneYard);
+     yardArray = makeArray();
+	 boneCount = INIT_SIZE;
+
+     printYardArr();
+     shuffleBones();
+     shuffled = !shuffled;
+     printYardArr();
+
+     generateYard();
 	
 }
 
-
-void ChickenYard::generateYard()
+/*
+ * Create the bone yard as an array initially of 52 bones
+ * Return: an std::array container of 52 bone objects.
+ */
+std::array<Bone, 52>ChickenYard::makeArray() const
 {
-    int counter = 0;
 
-    generateYard(boneYard, boneYard, counter);
+    // when generating the list we will need to recurse to link the ptrs
+    std::array<Bone, 52> bones {};
+
+
+    for(auto x = 0; x < INIT_SIZE; x++)
+    {
+        Bone temp;
+        bones[x] = temp;
+    }
+
+    return bones;
 }
 
-void ChickenYard::generateYard(node *& curr, node *& prev, int & counter)
+/*
+ * Shuffle the array of bones using the std::shuffle method
+ * To generate a random index for each object I made use of the
+ * std::default_random_engine
+ */
+void ChickenYard::shuffleBones()
+{
+
+    auto range = std::default_random_engine {};
+    shuffle(yardArray.begin(), yardArray.end(),range);
+}
+
+
+
+/*
+ * Turn the yard from an array of bones to a linked list of bones
+ * This method calls the recursive version of itself to complete the task.
+ */
+void ChickenYard::generateYard()
+{
+
+    int counter = 0;
+    generateYard(boneYard, yardArray, counter);
+
+}
+
+
+/*
+ * Recurse of the std::array structure to create a linked list of all the
+ * bones in the boneYard;
+ * Params: node *& a pointer reference to the head of the linked list
+ *         std::array & a reference to the array of bones.
+ *         int & a reference to an int which is used to both access the object
+ *         stored at each index of the array and is also used as the
+ *         recursive stopping point, so we don't overflow the bounds of the
+ *         yardArray
+ */
+void ChickenYard::generateYard(node *& curr,
+                               std::array<Bone, INIT_SIZE> &values,
+                               int & counter)
 {
     if(counter == INIT_SIZE)
         return;
 
-    if(!curr)
-    {
-        curr = new node();
-        curr->data = new Bone();
-        curr->next = nullptr;
-        generateYard(curr->next, curr, ++counter);
-    }
-    else
-    {
-        return;
-    }
+    curr = new node(values[counter]);
+    generateYard(curr->next, values, ++counter);
 }
 
-// always use a temp copy of the list to iterate or it will change the value
-// of the head of the list. if we use the actual head pointer then we will
-// advance it causing seg faults at some point.
-ChickenYard::node* ChickenYard::getEnd()
+/*
+ * Copy constructor to make deep copies of chickenYard objects
+ */
+ChickenYard::ChickenYard(const ChickenYard &aYard):boneYard(nullptr),boneCount(0),
+                                                   shuffled(false)
 {
-    // make sure all functions that get a return value from here check to be
-    // sure that they're not trying to operate on a nullptr;
-    // EX: temp = getEnd() If(!temp) *do return* else do operation
-    if(!boneYard)
-        return nullptr;
+    *this = aYard;
+}
+/*
+ * Overloaded operator= to create deep copies of all chickenYard objects
+ * when created via = assignment.
+ */
+ChickenYard& ChickenYard::operator=(const ChickenYard & aYard)
+{
+    if(this == &aYard)
+        return *this;
 
-    node * temp = boneYard;
-    for(auto i = 0; i < boneCount; i++)
-    {
-        temp = temp->next;
-    }
+    if(boneYard)
+        destroy();
 
-    return temp;
+    boneCount = aYard.boneCount;
+    shuffled = aYard.shuffled;
+
+    boneYard = new node();
+
+    copyChain(boneYard, aYard.boneYard);
+
+
+    return *this;
 }
 
+/*
+ * Class destructor
+ */
 ChickenYard::~ChickenYard()
 {
     destroy();
 }
 
 
-/**
+/*
  * Deallocate dynamic memory allocations
  */
 void ChickenYard::destroy()
@@ -78,7 +141,10 @@ void ChickenYard::destroy()
 
 }
 
-
+/*
+ * Recursively free all pointers being stored in the linked list
+ * Param: node *& a pointer reference to the head of the list.
+ */
 void ChickenYard::destroy(node *& aBone)
 {
     if(!aBone)
@@ -87,31 +153,59 @@ void ChickenYard::destroy(node *& aBone)
     delete aBone;
 }
 
-ChickenYard::ChickenYard(const ChickenYard &aYard):boneYard(nullptr),boneCount(0),shuffled(false)
+
+
+// helper functions
+
+// check if the chickenYards linked list is empty
+bool ChickenYard::isEmpty() const
 {
-	*this = aYard;
+    return boneYard == nullptr;
 }
 
-ChickenYard& ChickenYard::operator=(const ChickenYard & aYard)
+// get a total count of all bones in the boneYard linked list.
+int ChickenYard::getCount()
 {
-	if(this == &aYard)
-		return *this;
-	
-	if(boneYard)
-		destroy();
 
-	boneCount = aYard.boneCount;
-	shuffled = aYard.shuffled;
-
-	boneYard = new node();
-
-    copyChain(boneYard, aYard.boneYard);
-
-
-	return *this;
+    return getCount(boneYard);
 }
 
+// print the array of bones to show shuffle.
+void ChickenYard::printYardArr()
+{
+    if(!shuffled)
+        cout << "Here's the bones before shuffle! " << endl;
+    else
+        cout << "Here's the bones after shuffle! " << endl;
 
+    for(auto x = 0; x < INIT_SIZE; x++)
+    {
+        cout << x + 1 << " Side A: " << yardArray[x].getSideA()
+             << " Side B: " << yardArray[x].getSideB() << endl;
+    }
+}
+
+// end helper functions
+
+// ****************************************** //
+
+// recursive helper functions
+
+/*
+ * Recursively count all nodes in the linked list
+ * Param node* a pointer to the head of this linked list.
+ */
+int ChickenYard::getCount(ChickenYard::node *yard) const
+{
+    if(!yard)
+        return 0;
+
+    return 1 + getCount(yard->next);
+}
+
+/*
+ * Recursively copy all nodes in a linked list to create deep copies.
+ */
 void ChickenYard::copyChain(node *& head, node * copy)
 {
     if(!copy)
@@ -122,46 +216,5 @@ void ChickenYard::copyChain(node *& head, node * copy)
 
 }
 
-// can we not create these methods? Lets check and see if
-// the random number generation can be used as the shuffle. email professor.
-void ChickenYard::shuffleBones()
-{
-    shuffleBones(boneYard);
-}
 
-void ChickenYard::shuffleBones(ChickenYard::node *& yard)
-{
-  if(isEmpty())
-      return;
-
-    auto range = std::default_random_engine {};
-    array<node, INIT_SIZE> listCopy = makeArray(boneYard);
-    shuffle(listCopy.begin(), listCopy.end(),range);
-
-    destroy();
-    boneYard = nullptr;
-
-    for(auto i = 0; i < INIT_SIZE; i++)
-        boneYard
-}
-
-
-
-std::array<ChickenYard::node,52>ChickenYard::makeArray(ChickenYard::node *head)
-{
-
-    array<node, 52> bones;
-    int counter = 0;
-
-    for(auto curr = head; curr; curr = curr->next)
-        bones[counter++] = *curr;
-
-    return bones;
-}
-
-
-
-bool ChickenYard::isEmpty() const
-{
-    return boneYard == nullptr;
-}
+// end recursive implementations
