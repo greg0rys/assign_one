@@ -1,5 +1,8 @@
 #pragma once
 #include <iostream>
+#include<cstdlib>
+#include <array>
+#include <algorithm>
 #include "Bone.h"
 
 using namespace std;
@@ -12,6 +15,7 @@ public:
     ~ChickenYard();
 	ChickenYard& operator=(const ChickenYard &);
 
+    bool isEmpty() const;
     void generateYard();
 	void destroy();
     void shuffleBones();
@@ -49,16 +53,16 @@ private:
         }
     };
 
-    // this will become a doubly linked circular linked list
+
     node * boneYard;
-    node * end; // a pointer to keep track of the last node in our list
-    static int boneCount; /* don't let this stay static remove it */
+    int boneCount; /* don't let this stay static remove it */
 	bool shuffled;
 	const static int INIT_SIZE = 52;
 	void destroy(node *&);
-	void copyChain(Bone *&, Bone *);
+	void copyChain(node *&, node *);
     void generateYard(node *&, node *&, int &);
     void shuffleBones(node *&);
     node * getEnd();
+    std::array<node,INIT_SIZE> makeArray(node *);
 
 };

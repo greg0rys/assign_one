@@ -24,5 +24,6 @@ private:
 	const static int INIT_SIZE = 52;
 	void destroy(Bone *);
 	void copyChain(Bone *, Bone *);
+    void makeArray(node *);
 
 };

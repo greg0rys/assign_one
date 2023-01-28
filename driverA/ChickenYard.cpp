@@ -1,6 +1,9 @@
 //
 // Created by shene on 1/13/2023.
 //
+#include <algorithm>
+#include <array>
+#include <random>
 #include "ChickenYard.h"
 
 ChickenYard::ChickenYard():boneYard(nullptr), shuffled(false)
@@ -17,6 +20,7 @@ ChickenYard::ChickenYard():boneYard(nullptr), shuffled(false)
 void ChickenYard::generateYard()
 {
     int counter = 0;
+
     generateYard(boneYard, boneYard, counter);
 }
 
@@ -99,31 +103,22 @@ ChickenYard& ChickenYard::operator=(const ChickenYard & aYard)
 	boneCount = aYard.boneCount;
 	shuffled = aYard.shuffled;
 
-	boneYard = new Bone*[boneCount];
+	boneYard = new node();
 
-	for(auto i = 0; i < boneCount; i++)
-	{
-		boneYard[i] = nullptr;
+    copyChain(boneYard, aYard.boneYard);
 
-		copyChain(aYard.boneYard[i], boneYard[i]);
-	}
 
 	return *this;
 }
 
 
-void ChickenYard::copyChain(Bone *& boneA, Bone * boneB)
+void ChickenYard::copyChain(node *& head, node * copy)
 {
-    if(!boneB)
+    if(!copy)
         return;
+    head = new node(*copy->data);
 
-    if(boneA)
-    {
-        delete boneA;
-        boneA = nullptr;
-    }
-
-    boneA = boneB;
+    copyChain(head->next, copy->next);
 
 }
 
@@ -131,11 +126,42 @@ void ChickenYard::copyChain(Bone *& boneA, Bone * boneB)
 // the random number generation can be used as the shuffle. email professor.
 void ChickenYard::shuffleBones()
 {
-    node * temp = nullptr;
-    shuffleBones
+    shuffleBones(boneYard);
 }
 
 void ChickenYard::shuffleBones(ChickenYard::node *& yard)
 {
+  if(isEmpty())
+      return;
 
+    auto range = std::default_random_engine {};
+    array<node, INIT_SIZE> listCopy = makeArray(boneYard);
+    shuffle(listCopy.begin(), listCopy.end(),range);
+
+    destroy();
+    boneYard = nullptr;
+
+    for(auto i = 0; i < INIT_SIZE; i++)
+        boneYard
+}
+
+
+
+std::array<ChickenYard::node,52>ChickenYard::makeArray(ChickenYard::node *head)
+{
+
+    array<node, 52> bones;
+    int counter = 0;
+
+    for(auto curr = head; curr; curr = curr->next)
+        bones[counter++] = *curr;
+
+    return bones;
+}
+
+
+
+bool ChickenYard::isEmpty() const
+{
+    return boneYard == nullptr;
 }
