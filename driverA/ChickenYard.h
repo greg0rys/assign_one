@@ -48,19 +48,21 @@ private:
     int getCount(node *) const;
     std::array<Bone, INIT_SIZE> makeArray() const;
     void printList(node *);
+    void removeFromList(node *&);
 
 public:
     ChickenYard();
     ChickenYard(const ChickenYard &);
     ~ChickenYard();
     ChickenYard &operator=(const ChickenYard &);
-    ChickenYard &operator=(const std::array<node, 52> &);
+
 
     bool isEmpty() const;
     void generateYard();
     void destroy();
     void shuffleBones();
     int getCount();
-    void draw();
+    bool draw(Bone &);
+    Bone** getHand();
     void printList();
 };

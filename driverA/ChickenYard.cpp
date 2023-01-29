@@ -133,6 +133,36 @@ void ChickenYard::destroy(node *&aBone) {
     delete aBone;
 }
 
+
+Bone** ChickenYard::getHand()
+{
+    if(isEmpty())
+        return nullptr;
+
+    Bone** hand = new Bone*[7];
+    node * temp = boneYard;
+
+    for(auto x = 0; x <= 6; x++)
+    {
+        hand[x] = new Bone(*temp->data);
+        removeFromList(temp);
+        temp = temp->next;
+    }
+    boneYard = temp;
+    return hand;
+
+}
+
+
+bool ChickenYard::draw(Bone &aBone)
+{
+    if(isEmpty())
+        return isEmpty();
+    aBone = *boneYard->data;
+    removeFromList(boneYard);
+    return true;
+}
+
 // helper functions
 
 // check if the chickenYards linked list is empty
@@ -195,6 +225,15 @@ void ChickenYard::printList(node *head) {
     head->data->printSides();
 
     printList(head->next);
+}
+
+
+void ChickenYard::removeFromList(ChickenYard::node *& target)
+{
+    node * curr = target->next;
+    delete target;
+    target = curr;
+    boneCount--;
 }
 
 // end recursive implementations
