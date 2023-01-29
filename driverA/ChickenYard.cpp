@@ -6,36 +6,30 @@
 #include "ChickenYard.h"
 
 // default constructor
-ChickenYard::ChickenYard():boneYard(nullptr), boneCount(INIT_SIZE), shuffled
-(false)
-{
+ChickenYard::ChickenYard()
+        : boneYard(nullptr), boneCount(INIT_SIZE), shuffled(false) {
 
+    yardArray = makeArray();
+    boneCount = INIT_SIZE;
 
-     yardArray = makeArray();
-	 boneCount = INIT_SIZE;
+    printYardArr();
+    shuffleBones();
+    shuffled = !shuffled;
 
-     printYardArr();
-     shuffleBones();
-     shuffled = !shuffled;
-     printYardArr();
-
-     generateYard();
-	
+    generateYard();
+    printList();
 }
 
 /*
  * Create the bone yard as an array initially of 52 bones
  * Return: an std::array container of 52 bone objects.
  */
-std::array<Bone, 52>ChickenYard::makeArray() const
-{
+std::array<Bone, 52> ChickenYard::makeArray() const {
 
     // when generating the list we will need to recurse to link the ptrs
-    std::array<Bone, 52> bones {};
+    std::array<Bone, 52> bones{};
 
-
-    for(auto x = 0; x < INIT_SIZE; x++)
-    {
+    for (auto x = 0; x < INIT_SIZE; x++) {
         Bone temp;
         bones[x] = temp;
     }
@@ -48,27 +42,21 @@ std::array<Bone, 52>ChickenYard::makeArray() const
  * To generate a random index for each object I made use of the
  * std::default_random_engine
  */
-void ChickenYard::shuffleBones()
-{
+void ChickenYard::shuffleBones() {
 
-    auto range = std::default_random_engine {};
-    shuffle(yardArray.begin(), yardArray.end(),range);
+    auto range = std::default_random_engine{};
+    shuffle(yardArray.begin(), yardArray.end(), range);
 }
-
-
 
 /*
  * Turn the yard from an array of bones to a linked list of bones
  * This method calls the recursive version of itself to complete the task.
  */
-void ChickenYard::generateYard()
-{
+void ChickenYard::generateYard() {
 
     int counter = 0;
-    generateYard(boneYard, yardArray, counter);
-
+    generateYard(boneYard, counter);
 }
-
 
 /*
  * Recurse of the std::array structure to create a linked list of all the
@@ -80,35 +68,35 @@ void ChickenYard::generateYard()
  *         recursive stopping point, so we don't overflow the bounds of the
  *         yardArray
  */
-void ChickenYard::generateYard(node *& curr,
-                               std::array<Bone, INIT_SIZE> &values,
-                               int & counter)
-{
-    if(counter == INIT_SIZE)
+void ChickenYard::generateYard(node *&curr, int &counter) {
+    Bone *temp = nullptr;
+
+    if (counter == INIT_SIZE)
         return;
 
-    curr = new node(values[counter]);
-    generateYard(curr->next, values, ++counter);
+    temp = new Bone(yardArray[counter]);
+    curr = new node();
+    curr->data = temp;
+    curr->next = nullptr;
+    generateYard(curr->next, ++counter);
 }
 
 /*
  * Copy constructor to make deep copies of chickenYard objects
  */
-ChickenYard::ChickenYard(const ChickenYard &aYard):boneYard(nullptr),boneCount(0),
-                                                   shuffled(false)
-{
+ChickenYard::ChickenYard(const ChickenYard &aYard)
+        : boneYard(nullptr), boneCount(0), shuffled(false) {
     *this = aYard;
 }
 /*
  * Overloaded operator= to create deep copies of all chickenYard objects
  * when created via = assignment.
  */
-ChickenYard& ChickenYard::operator=(const ChickenYard & aYard)
-{
-    if(this == &aYard)
+ChickenYard &ChickenYard::operator=(const ChickenYard &aYard) {
+    if (this == &aYard)
         return *this;
 
-    if(boneYard)
+    if (boneYard)
         destroy();
 
     boneCount = aYard.boneCount;
@@ -118,72 +106,57 @@ ChickenYard& ChickenYard::operator=(const ChickenYard & aYard)
 
     copyChain(boneYard, aYard.boneYard);
 
-
     return *this;
 }
 
 /*
  * Class destructor
  */
-ChickenYard::~ChickenYard()
-{
-    destroy();
-}
-
+ChickenYard::~ChickenYard() { destroy(); }
 
 /*
  * Deallocate dynamic memory allocations
  */
-void ChickenYard::destroy()
-{
+void ChickenYard::destroy() {
     destroy(boneYard);
     boneYard = nullptr;
-
 }
 
 /*
  * Recursively free all pointers being stored in the linked list
  * Param: node *& a pointer reference to the head of the list.
  */
-void ChickenYard::destroy(node *& aBone)
-{
-    if(!aBone)
+void ChickenYard::destroy(node *&aBone) {
+    if (!aBone)
         return;
     destroy(aBone->next);
     delete aBone;
 }
 
-
-
 // helper functions
 
 // check if the chickenYards linked list is empty
-bool ChickenYard::isEmpty() const
-{
-    return boneYard == nullptr;
-}
+bool ChickenYard::isEmpty() const { return boneYard == nullptr; }
 
 // get a total count of all bones in the boneYard linked list.
-int ChickenYard::getCount()
-{
-
-    return getCount(boneYard);
-}
+int ChickenYard::getCount() { return getCount(boneYard); }
 
 // print the array of bones to show shuffle.
-void ChickenYard::printYardArr()
-{
-    if(!shuffled)
+void ChickenYard::printYardArr() {
+    if (!shuffled)
         cout << "Here's the bones before shuffle! " << endl;
-    else
-        cout << "Here's the bones after shuffle! " << endl;
 
-    for(auto x = 0; x < INIT_SIZE; x++)
-    {
+    for (auto x = 0; x < INIT_SIZE; x++) {
         cout << x + 1 << " Side A: " << yardArray[x].getSideA()
              << " Side B: " << yardArray[x].getSideB() << endl;
     }
+
+    cout << endl << endl;
+    cout << "***********************************" << endl;
+    cout << "Heres the bones after the shuffle:" << endl;
 }
+
+void ChickenYard::printList() { printList(boneYard); }
 
 // end helper functions
 
@@ -195,9 +168,8 @@ void ChickenYard::printYardArr()
  * Recursively count all nodes in the linked list
  * Param node* a pointer to the head of this linked list.
  */
-int ChickenYard::getCount(ChickenYard::node *yard) const
-{
-    if(!yard)
+int ChickenYard::getCount(ChickenYard::node *yard) const {
+    if (!yard)
         return 0;
 
     return 1 + getCount(yard->next);
@@ -206,15 +178,23 @@ int ChickenYard::getCount(ChickenYard::node *yard) const
 /*
  * Recursively copy all nodes in a linked list to create deep copies.
  */
-void ChickenYard::copyChain(node *& head, node * copy)
-{
-    if(!copy)
+void ChickenYard::copyChain(node *&head, node *copy) {
+    if (!copy)
         return;
     head = new node(*copy->data);
 
     copyChain(head->next, copy->next);
-
 }
 
+void ChickenYard::printList(node *head) {
+    static int pos = 1;
+    if (!head)
+        return;
+    cout << pos++ << ". "; // do pos++ here and will use the value and then
+    // increment it for the next iteration.
+    head->data->printSides();
+
+    printList(head->next);
+}
 
 // end recursive implementations

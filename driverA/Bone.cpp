@@ -3,8 +3,8 @@
 Bone::Bone(): sideA(nullptr), sideB(nullptr)
 {
     // generate random number 1-9
-     generateNumbers(sideA);
-     generateNumbers(sideB);
+    generateNumbers(sideA);
+    generateNumbers(sideB);
 }
 
 Bone::Bone(const Bone & aBone):sideA(nullptr),sideB(nullptr)
