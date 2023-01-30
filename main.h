@@ -1,11 +1,10 @@
-/**
-*
-*/
-
 #pragma once
+#include "ChickenYard.h"
+#include "Player.h"
 #include <iostream>
-#include "Game.h"
+using namespace std;
 
 int main();
-
-void gameEnd();
+void gameStart();
+void gamePlay(ChickenYard *&, Player *&, Player *&);
+void gameEnd(ChickenYard *&, Player *&, Player *&);
