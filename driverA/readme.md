@@ -1,5 +1,4 @@
 Here's the bones before shuffle! 
-
 1 [ 8 | 5 ]	
 
 2 [ 4 | 1 ]	3 [ 7 | 1 ]	4 [ 3 | 1 ]	5 [ 3 | 4 ]	6 [ 7 | 3 ]	
@@ -93,3 +92,4 @@ Current Hand:
 p1 score: 380
 p2 score: 345
 
+![img.png](img.png)
