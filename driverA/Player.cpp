@@ -1,5 +1,8 @@
 #include "Player.h"
 
+/*
+ * Default constructor
+ */
 Player::Player(): hand(nullptr), endOfHand(nullptr), points(0), handCount(0),
                   firstHand
                           (true)
@@ -7,12 +10,20 @@ Player::Player(): hand(nullptr), endOfHand(nullptr), points(0), handCount(0),
 
 }
 
+/*
+ * Copy Constructor
+ * TODO: edit copy chain method to copy a double linked list rather than single
+ */
 Player::Player(const Player &aPlayer): hand(nullptr), endOfHand(nullptr),
                                        points(0)
 {
     *this = aPlayer;
 }
 
+
+/*
+ * Overloaded operator= create deep copies of player objects
+ */
 Player& Player::operator=(const Player &aPlayer)
 {
     if(this == &aPlayer)
@@ -37,18 +48,28 @@ Player& Player::operator=(const Player &aPlayer)
 }
 
 
+/*
+ * Class Destructor
+ */
 Player::~Player()
 {
     destroy();
 }
 
+
+/*
+ * Called at class destruction, this method will pass the head of the list
+ * into the recursive version of itself to deallocate all dynamic pointers
+ */
 void Player::destroy()
 {
     destroy(hand);
     hand = nullptr;
 }
 
-
+/*
+ * Recursively destroy the DLL
+ */
 void Player::destroy(Player:: node *& head)
 {
     if(!head)
@@ -58,17 +79,29 @@ void Player::destroy(Player:: node *& head)
 }
 
 
+/*
+ * Check to see if this is the first time the players hand has been dealt.
+ */
 bool Player::isFirstHand() const
 {
     return firstHand;
 }
 
+
+/*
+ * Set true if player has not had a hand dealt yet false if else.
+ */
 void Player::setFirstHand(const bool val)
 {
     firstHand = val;
 }
 
 
+/*
+ * Create a double linked list by getting bone objects passed to the player's
+ * hand from the ChickenYard. The yard manages this by first giving a copy
+ * of the bone obj stored in the list and then removing it from the yard
+ */
 bool Player::setHand(const Bone &aBone)
 {
     if(!isFirstHand())
@@ -96,7 +129,10 @@ bool Player::setHand(const Bone &aBone)
 
 
 
-
+/*
+ * Add a bone to the players hand, this will automatically place the new
+ * bone at the front of the double linked lst.
+ */
 void Player::addToHand(const Bone & aBone)
 {
     node * end = getEnd();
@@ -108,19 +144,26 @@ void Player::addToHand(const Bone & aBone)
     endOfHand = end->next;
 }
 
-
+/*
+ * Get the last bone in the players hand.
+ */
 Player::node*& Player::getEnd()
 {
     return endOfHand;
 }
 
-
+/*
+ * Calculate the total number of points the player currently has.
+ */
 void Player::getPoints(int &score)
 {
     tallyScore(hand, score);
 }
 
-
+/*
+ * Recurse the players hand, add up the total of each of the players bones
+ * to determine their score.
+ */
 void Player::tallyScore(Player::node *& playersHand, int &score)
 {
     if(!playersHand)
@@ -142,7 +185,9 @@ void Player::copyChain(Player::node *&head, Player::node *copy)
 
 }
 
-
+/*
+ * Recurse the players hand to display it.
+ */
 void Player::displayHand()
 {
     cout << "Current Hand: " << endl;
@@ -150,7 +195,9 @@ void Player::displayHand()
     cout << endl;
 }
 
-
+/*
+ * Recurse the players hand to display it
+ */
 void Player::displayHand(Player::node *head)
 {
     if(!head)
