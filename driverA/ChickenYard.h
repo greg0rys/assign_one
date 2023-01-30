@@ -64,7 +64,7 @@ public:
     void destroy();
     void shuffleBones();
     int getCount();
-    bool draw(Bone &);
+    bool draw(Player *&);
     void getHand(Player *&);
     void printList();
 };

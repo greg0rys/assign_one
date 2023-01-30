@@ -155,12 +155,14 @@ void ChickenYard::getHand(Player *& aPlayer)
 }
 
 
-bool ChickenYard::draw(Bone &aBone)
+bool ChickenYard::draw(Player *& aPlayer)
 {
     if(isEmpty())
         return isEmpty();
-    aBone = *boneYard->data;
+
+    aPlayer->addToHand(*boneYard->data);
     removeFromList(boneYard);
+    boneCount--;
     return true;
 }
 

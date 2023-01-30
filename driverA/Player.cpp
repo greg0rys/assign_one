@@ -3,9 +3,9 @@
 /*
  * Default constructor
  */
-Player::Player(): hand(nullptr), endOfHand(nullptr), points(0), handCount(0),
-                  firstHand
-                          (true)
+Player::Player(): hand(nullptr), endOfHand(nullptr), points(0), handCount(0)
+,playerNo(0),firstHand(true)
+
 {
 
 }
@@ -113,6 +113,7 @@ bool Player::setHand(const Bone &aBone)
         hand = new node(aBone);
         hand->prev = nullptr;
         hand->next = nullptr;
+        handCount++;
         return true;
     }
 
@@ -122,6 +123,7 @@ bool Player::setHand(const Bone &aBone)
     endOfHand = hand;
     hand->prev = temp;
     hand = temp;
+    handCount++;
 
     return true;
 
@@ -135,13 +137,20 @@ bool Player::setHand(const Bone &aBone)
  */
 void Player::addToHand(const Bone & aBone)
 {
-    node * end = getEnd();
+    node * temp = new node(aBone);
+    addToHand(temp);
+}
 
-    end->next = new node(aBone);
-    end->next->prev = end;
-    end->next->next = nullptr;
+void Player::addToHand(Player::node *& newBone)
+{
+    node * curr = hand;
+    while(curr && curr->next)
+        curr = curr->next;
 
-    endOfHand = end->next;
+    newBone->prev = curr;
+    curr->next = newBone;
+    endOfHand = newBone;
+    handCount++;
 }
 
 /*
@@ -190,7 +199,7 @@ void Player::copyChain(Player::node *&head, Player::node *copy)
  */
 void Player::displayHand()
 {
-    cout << "Current Hand: " << endl;
+    cout << "Current Hand:" << endl;
     displayHand(hand);
     cout << endl;
 }
@@ -200,12 +209,44 @@ void Player::displayHand()
  */
 void Player::displayHand(Player::node *head)
 {
+	static int formatter = 1;
     if(!head)
         return;
     cout << "[ " << head->data->getSideA()
          << "|" << head->data->getSideB() << " ]";
+	if(formatter % 5 == 0)
+		cout << endl << endl;
+	formatter++;
     displayHand(head->next);
 }
 
 
 
+ostream &operator<<(ostream &out,  Player &aPlayer)
+{
+    int score = 0;
+    int playerNo;
+    aPlayer.getPlayerNo(playerNo);
+    aPlayer.getPoints(score);
+    out << "Player " << playerNo << "\n\t  ";
+    aPlayer.displayHand();
+    out << "\t Most recently added bone: \n\t ";
+    aPlayer.getEnd()->data->printSides();
+    out << endl;
+	out << "\t Bones in hand: " << aPlayer.handCount
+		<< endl;
+
+
+    return out;
+}
+
+
+void Player::setPlayerNo(const int playerNo)
+{
+    this->playerNo = playerNo;
+}
+
+void Player::getPlayerNo(int & playerNum) const
+{
+    playerNum = playerNo;
+}

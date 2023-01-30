@@ -64,12 +64,12 @@ private:
     node * hand;
     node * endOfHand;
 
-    int points, handCount;
+    int points, handCount,playerNo;
     const static int HAND_START = 7;
     bool firstHand;
 
     void destroy(Player::node *&);
-    void addToHand(const Bone &);
+    void addToHand(node *&);
     Player::node*& getEnd();
     void tallyScore(Player::node *&, int &);
     void copyChain(node *&, node *);
@@ -79,6 +79,7 @@ public:
     Player();
     Player(const Player &);
     Player& operator=(const Player &);
+    friend ostream& operator<<(ostream &out,  Player &);
     ~Player();
     void destroy();
     void getPoints(int &);
@@ -86,5 +87,8 @@ public:
     bool isFirstHand() const;
     void setFirstHand(const bool);
     void displayHand();
+    void addToHand(const Bone &);
+    void getPlayerNo(int &) const;
+    void setPlayerNo(const int);
 
 };
