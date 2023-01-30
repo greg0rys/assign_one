@@ -1,11 +1,14 @@
 #include "Player.h"
 
-Player::Player():hand(nullptr),points(0),handCount(0)
+Player::Player(): hand(nullptr), endOfHand(nullptr), points(0), handCount(0),
+                  firstHand
+                          (true)
 {
 
 }
 
-Player::Player(const Player &aPlayer):hand(nullptr),points(0)
+Player::Player(const Player &aPlayer): hand(nullptr), endOfHand(nullptr),
+                                       points(0)
 {
     *this = aPlayer;
 }
@@ -18,6 +21,11 @@ Player& Player::operator=(const Player &aPlayer)
     if(hand)
         destroy();
     hand = nullptr;
+
+    if(!aPlayer.endOfHand)
+        endOfHand = nullptr;
+    else
+        endOfHand = new node(*aPlayer.endOfHand);
 
     if(!aPlayer.hand)
         hand = nullptr;
@@ -50,84 +58,61 @@ void Player::destroy(Player:: node *& head)
 }
 
 
-void Player::generateHand(ChickenYard *& boneYard)
+bool Player::isFirstHand() const
 {
-    Bone ** bones = boneYard->getHand();
-    generateHand(hand, hand, bones);
-    destroyHandArray(bones);
-
-
+    return firstHand;
 }
 
-void Player::generateHand(Player::node *&prev, Player::node *&curr, Bone **
-bones)
+void Player::setFirstHand(const bool val)
 {
-    static int counter = 0;
-    if(counter == HAND_SIZE)
-        return;
+    firstHand = val;
+}
 
-    if(!prev)
+
+bool Player::setHand(const Bone &aBone)
+{
+    if(!isFirstHand())
+        return false;
+    node * temp = nullptr;
+
+    if(!hand)
     {
-        curr = new node(*bones[counter]);
-        curr->prev = curr->next = nullptr;
-        counter++;
-        handCount++;
-        generateHand(curr, curr->next, bones);
-        return;
+        hand = new node(aBone);
+        hand->prev = nullptr;
+        hand->next = nullptr;
+        return true;
     }
 
-    curr = new node(*bones[counter]);
-    curr->prev = prev;
-    curr->next = nullptr;
-    counter++;
-    handCount++;
-    generateHand(curr, curr->next, bones);
+    temp = new node(aBone);
+    temp->prev = nullptr;
+    temp->next = hand;
+    endOfHand = hand;
+    hand->prev = temp;
+    hand = temp;
+
+    return true;
+
 }
 
 
 
 
-
-void Player::destroyHandArray(Bone ** bones)
+void Player::addToHand(const Bone & aBone)
 {
-    for(auto x = 0; x < HAND_SIZE; x++)
-    {
-        if(bones[x])
-            delete bones[x];
-    }
+    node * end = getEnd();
 
-    if(bones)
-        delete []bones;
+    end->next = new node(aBone);
+    end->next->prev = end;
+    end->next->next = nullptr;
 
+    endOfHand = end->next;
 }
 
 
-
-void Player::drawBone(ChickenYard *boneYard)
+Player::node*& Player::getEnd()
 {
-    if(boneYard->isEmpty())
-        return;
-    Bone temp;
-    boneYard->draw(temp);
-    addToHand(hand,temp);
+    return endOfHand;
 }
-
-
-void Player::addToHand(Player::node *&playersHand, Bone &aBone)
-{
-    node * temp = playersHand;
-    node * newNode = nullptr;
-
-    while(temp && temp->next)
-        temp = temp->next;
-
-    newNode = new node(aBone);
-    newNode->prev = temp;
-    temp->next = newNode;
-    newNode->next = nullptr;
-    handCount++;
-}
-
 
 
 void Player::getPoints(int &score)
@@ -146,7 +131,7 @@ void Player::tallyScore(Player::node *& playersHand, int &score)
 }
 
 
-
+// need to update this to manage DLL
 void Player::copyChain(Player::node *&head, Player::node *copy)
 {
 
@@ -156,3 +141,24 @@ void Player::copyChain(Player::node *&head, Player::node *copy)
     copyChain(head->next, copy->next);
 
 }
+
+
+void Player::displayHand()
+{
+    cout << "Current Hand: " << endl;
+    displayHand(hand);
+    cout << endl;
+}
+
+
+void Player::displayHand(Player::node *head)
+{
+    if(!head)
+        return;
+    cout << "[ " << head->data->getSideA()
+         << "|" << head->data->getSideB() << " ]";
+    displayHand(head->next);
+}
+
+
+

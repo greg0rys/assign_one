@@ -1,14 +1,9 @@
-#include "main.h"
+#pragma once
+#include <iostream>
+#include "ChickenYard.h"
 #include "Player.h"
 
-int main()
-{
-    auto *testYard = new ChickenYard();
-    cout << "Yard count before draw: " << testYard->getCount() << endl;
-    auto *player1 = new Player();
-    player1->generateHand(testYard);
-    cout << "Yard count after draw: " << testYard->getCount();
+using namespace std;
+int main();
 
-    return 0;
-}
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "Bone.h"
+#include "Player.h"
 #include <algorithm>
 #include <array>
 #include <cstdlib>
@@ -36,6 +37,7 @@ private:
     };
 
     const static int INIT_SIZE = 52;
+    const static int HAND_SIZE = 7;
 
     std::array<Bone, INIT_SIZE> yardArray;
     node *boneYard;
@@ -63,6 +65,6 @@ public:
     void shuffleBones();
     int getCount();
     bool draw(Bone &);
-    Bone** getHand();
+    void getHand(Player *&);
     void printList();
 };

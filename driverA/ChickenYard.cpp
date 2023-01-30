@@ -1,9 +1,10 @@
+#include "ChickenYard.h"
 /**
  * ChickenYard.cpp the implementation file for ChickenYard.h
  * @author Greg Shenefelt
  * @version 0.0.4
  */
-#include "ChickenYard.h"
+
 
 // default constructor
 ChickenYard::ChickenYard()
@@ -134,23 +135,23 @@ void ChickenYard::destroy(node *&aBone) {
 }
 
 
-Bone** ChickenYard::getHand()
+void ChickenYard::getHand(Player *& aPlayer)
 {
-    if(isEmpty())
-        return nullptr;
+    if(!boneYard || !aPlayer->isFirstHand())
+        return;
 
-    Bone** hand = new Bone*[7];
-    node * temp = boneYard;
-
-    for(auto x = 0; x <= 6; x++)
+    node * curr = boneYard;
+    for(auto x = 0; x < HAND_SIZE; x++)
     {
-        hand[x] = new Bone(*temp->data);
-        removeFromList(temp);
-        temp = temp->next;
+        node * temp = curr->next;
+        aPlayer->setHand(*curr->data);
+        removeFromList(curr);
+        curr = temp;
     }
-    boneYard = temp;
-    return hand;
 
+    aPlayer->setFirstHand(false);
+
+    boneYard = curr;
 }
 
 
@@ -177,16 +178,20 @@ void ChickenYard::printYardArr() {
         cout << "Here's the bones before shuffle! " << endl;
 
     for (auto x = 0; x < INIT_SIZE; x++) {
-        cout << x + 1 << " Side A: " << yardArray[x].getSideA()
-             << " Side B: " << yardArray[x].getSideB() << endl;
+        cout << x + 1 << " [ " << yardArray[x].getSideA()
+             << " | " << yardArray[x].getSideB() << " ]\t";
+        if(x % 5 == 0)
+            cout << endl << endl;
     }
 
     cout << endl << endl;
-    cout << "***********************************" << endl;
-    cout << "Heres the bones after the shuffle:" << endl;
+    cout << "    \t\t\t***********************************    " << endl;
+    cout << "    \t\t\tHere's the bones after the shuffle:    " << endl;
+    cout << "    \t\t\t***********************************    " << endl;
 }
 
-void ChickenYard::printList() { printList(boneYard); }
+void ChickenYard::printList() { printList(boneYard);
+    cout << endl;}
 
 // end helper functions
 
@@ -220,9 +225,11 @@ void ChickenYard::printList(node *head) {
     static int pos = 1;
     if (!head)
         return;
-    cout << pos++ << ". "; // do pos++ here and will use the value and then
+    cout << pos++ ; // do pos++ here and will use the value and then
     // increment it for the next iteration.
     head->data->printSides();
+    if(pos % 5 == 0)
+        cout << endl << endl;
 
     printList(head->next);
 }

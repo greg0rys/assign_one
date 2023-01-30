@@ -30,7 +30,7 @@ public:
     void printSides()
     {
 
-        cout << " Side A: " << getSideA() << " Side B: " << getSideB() << endl;
+        cout << " [ " << getSideA() << " | " << getSideB() << " ]\t";
     }
 
 private:

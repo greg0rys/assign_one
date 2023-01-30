@@ -1,18 +1,17 @@
 #pragma once
 #include "Bone.h"
-#include "ChickenYard.h"
 #include <iostream>
 #include <algorithm>
 #include <vector>
 
-class Player
-{
+class Player {
 private:
     struct node
     {
-        Bone * data;
-        node *prev;
-        node *next;
+        Bone * data = nullptr;
+        node *prev = nullptr;
+        node *next = nullptr;
+
         node()
         {
             data = nullptr;
@@ -24,10 +23,36 @@ private:
         {
             if(data)
                 delete data;
+
             data = new Bone(bone);
-            prev = next = nullptr;
+            prev = nullptr;
+            next = nullptr;
         }
 
+        node(const Bone &aBone, node * next, node * prev)
+        {
+            if(data)
+                delete data;
+            data = new Bone(aBone);
+            this->next = next;
+            this->prev = prev;
+        }
+
+        node(const node &aNode)
+        {
+            if(data)
+                delete data;
+            if(!aNode.data)
+            {
+                data = nullptr;
+            }
+            else
+            {
+                data = new Bone(*aNode.data);
+                next = aNode.next;
+                prev = aNode.prev;
+            }
+        }
         ~node()
         {
             if(data)
@@ -37,24 +62,29 @@ private:
     };
 
     node * hand;
-    int points, handCount;
-    const static int HAND_SIZE = 7;
+    node * endOfHand;
 
-    void generateHand(node *&, node *&, Bone **);
-    void destroyHandArray(Bone **);
+    int points, handCount;
+    const static int HAND_START = 7;
+    bool firstHand;
+
     void destroy(Player::node *&);
-    void addToHand(Player::node *&, Bone &);
+    void addToHand(const Bone &);
+    Player::node*& getEnd();
     void tallyScore(Player::node *&, int &);
     void copyChain(node *&, node *);
+    void displayHand(node *);
 
 public:
     Player();
     Player(const Player &);
     Player& operator=(const Player &);
     ~Player();
-    void generateHand(ChickenYard *&);
     void destroy();
-    void drawBone(ChickenYard *);
     void getPoints(int &);
+    bool setHand(const Bone &);
+    bool isFirstHand() const;
+    void setFirstHand(const bool);
+    void displayHand();
 
 };
