@@ -1,15 +1,21 @@
 cmake_minimum_required(VERSION 3.23)
-project(Assignment_one_tests)
+project(assign_one)
 
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(
-        Assignment_one_tests
-        driver.h
-        driver.cpp
+        assign_one
+        main.h
+        main.cpp
         Bone.cpp
         Bone.h
         ChickenYard.h
         ChickenYard.cpp
         Player.h
-        Player.cpp redo/Player.h redo/Bone.h redo/ChickenYard.h redo/main.h redo/Player.cpp redo/ChickenYard.cpp redo/Bone.cpp)
+        Player.cpp
+        Game.h
+        Game.cpp
+        Field.h
+        Field.cpp
+        driverA/Player.h driverA/Bone.h driverA/ChickenYard.h driverA/driver.h driverA/Player.cpp driverA/ChickenYard.cpp driverA/Bone.cpp
+        driverA/driver.cpp)
