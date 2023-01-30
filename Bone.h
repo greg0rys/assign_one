@@ -5,6 +5,7 @@
 #pragma once
 #include <iostream>
 #include <cstdlib>
+using namespace std;
 
 class Bone
 {
@@ -13,9 +14,26 @@ public:
     ~Bone();
     Bone(const Bone &);
     Bone& operator=(const Bone &);
-    void generateNumbers(int *&);
+    void generateNumbers(int &);
+
+    int getSideA() const {
+        return sideA;
+    }
+    int getSideB() const {
+        return sideB;
+    }
+
+    int getBoneTotal() const {
+        return sideA + sideB;
+    }
+
+    void printSides()
+    {
+
+        cout << " [ " << getSideA() << " | " << getSideB() << " ]\t";
+    }
 
 private:
-    int * sideA, * sideB;
+    int sideA, sideB;
 
 };
