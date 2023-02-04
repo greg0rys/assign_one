@@ -17,6 +17,5 @@ add_executable(
         Game.cpp
         Field.h
         Field.cpp
-        driverA/Player.h driverA/Bone.h driverA/ChickenYard.h driverA/driver.h driverA/Player.cpp driverA/ChickenYard.cpp driverA/Bone.cpp
-        driverA/driver.cpp
-        driverB/)
+        driverA
+        driverB driverB/DLL.cpp driverB/DLL.h)

@@ -1,3 +1,13 @@
-//
-// Created by shene on 1/13/2023.
-//
+#include "Game.h"
+#include "driverB/Game.h"
+
+
+
+Game::Game()
+{
+	leadPlayer = 0;
+}
+
+
+
+

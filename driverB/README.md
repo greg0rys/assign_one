@@ -17,3 +17,5 @@ _this version of the driver implements the game and the field class._
     * placing links bewteen the nodes etc
 
 __version:__ *0.0.05*
+
+__quoi ? comme si c'était si dur que ça ?__
