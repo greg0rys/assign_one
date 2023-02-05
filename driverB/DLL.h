@@ -108,7 +108,7 @@ class playersDLL: public DLL
     playerDLL(const playerDLL &);
     virtual ~playerDLL() = 0;
     virtual display() = 0;
-    void generateHand();
+
 
 		
 };

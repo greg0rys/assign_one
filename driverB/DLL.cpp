@@ -101,17 +101,7 @@ void DLL::copyChain(DLL::node *& destList, DLL::node * sourceList)
 
 
     if(!sourceList)
-    {
-        if(sourceList->prev)
-            tail = sourceList->prev;
-        else
-            tail = nullptr;
         return;
-
-    }
-
-    if(destList)
-        delete destList;
 
     destList = new node(*sourceList->data);
     destList->prev = sourceList->prev;
@@ -180,6 +170,13 @@ void DLL::displayList(DLL::node * top)
  * playerList implements
  */
 
+playersDLL::playersDLL(): DLL()
+{
+    head = nullptr;
+    tail = nullptr;
+    *initSize = 7;
+    listSize = *initSize;
 
+}
 
 
