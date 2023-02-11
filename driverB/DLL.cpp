@@ -1,11 +1,11 @@
 #include "DLL.h"
 
-DLL::DLL():head(nullptr),tail(nullptr),initSize(nullptr),listSize(0)
+DLL::DLL():head(nullptr),tail(nullptr),listSize(0)
 {}
 
 
-DLL::DLL(const DLL &aCopy):head(nullptr),tail(nullptr),initSize(nullptr),
-                          listSize(0)
+DLL::DLL(const DLL &aCopy):head(nullptr),tail(nullptr),listSize(0)
+
 {
     *this = aCopy;
 }
@@ -15,21 +15,18 @@ DLL::DLL(const DLL &aCopy):head(nullptr),tail(nullptr),initSize(nullptr),
     if(this == &aCopy)
         return *this;
 
-    if(head)
-        destroy();
-
     if(isEmpty())
     {
-        head = nullptr;
-        tail = nullptr;
-        initSize = nullptr;
+        head = tail = nullptr;
         listSize = aCopy.listSize;
         return *this;
     }
 
+    if(head)
+        destroy();
+
     copyChain(head, aCopy.head);
     tail = getTail();
-    initSize = aCopy.getType(); // have each list share its type;
     listSize = aCopy.listSize;
 
     return *this;
@@ -80,6 +77,18 @@ void DLL::getCount(int &counter)
 }
 
 
+void DLL::getCount(const DLL &list, int &total)
+{
+    if(isEmpty())
+    {
+        total = 0;
+        return;
+    }
+
+    countChain(list.head, total);
+}
+
+
 void DLL::countChain(DLL::node *top, int &counter)
 {
     if(!top || isEmpty())
@@ -92,7 +101,7 @@ void DLL::countChain(DLL::node *top, int &counter)
 
 bool DLL::isEmpty()
 {
-    return head == nullptr;
+    return head;
 }
 
 
@@ -116,9 +125,24 @@ DLL::node* DLL::getHead()
 }
 
 
-void DLL::setHead(DLL::node &newHead)
+void DLL::setHead(const Bone &aBone)
 {
-    *head = newHead;
+    if(!head)
+    {
+        head = new node();
+        *(head->data) = aBone;
+        head->next = nullptr;
+        head->prev = nullptr;
+        tail = head;
+    }
+
+    node * temp = nullptr;
+    temp = new node();
+    *(temp->data) = aBone;
+    head->prev = temp;
+    temp->next = head;
+    head = temp;
+
 }
 
 
@@ -150,6 +174,7 @@ void DLL::displayList(DLL::node * top)
 {
     if(!top)
         return;
+
     static int formatter = 1;
 
     cout << "[ " << top->data->getSideA()
@@ -170,13 +195,53 @@ void DLL::displayList(DLL::node * top)
  * playerList implements
  */
 
-playersDLL::playersDLL(): DLL()
+playersDLL::playersDLL(): handCount(0),DLL()
 {
-    head = nullptr;
-    tail = nullptr;
-    *initSize = 7;
-    listSize = *initSize;
+}
 
+// what will happen is the base class will call its copy constructor
+// to copy the dynamic list the playersDll is
+
+// then we can just use the playersDLL copy constructor to handle the
+// elements that pretain to the playersDLL
+playersDLL::playersDLL(const playersDLL &playersHand): DLL(playersHand)
+{
+    *this = playersHand;
+}
+
+
+playersDLL& playersDLL::operator=(const playersDLL &aPlayersHand)
+{
+    if(this == &aPlayersHand)
+        return *this;
+    int copiesHand = 0;
+    getCount(aPlayersHand, copiesHand); // count the number in the players
+    handCount = copiesHand;
+
+    return *this;
+
+}
+
+playersDLL::~playersDLL()
+{
+    handCount = 0;
+
+}
+
+
+
+void playersDLL::display()
+{
+    /* have client program check for empty before calling this*/
+    displayList(getHead());
+}
+
+
+void playersDLL::displayList(DLL::node * start)
+{
+    if(!start || isEmpty())
+        return;
+    cout << start->data << start->recentDraw
 }
 
 
