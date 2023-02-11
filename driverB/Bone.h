@@ -33,6 +33,11 @@ public:
         cout << " [ " << getSideA() << " | " << getSideB() << " ]\t";
     }
 
+    bool isDouble()
+    {
+        return sideA == sideB;
+    }
+
 private:
     int sideA, sideB;
 

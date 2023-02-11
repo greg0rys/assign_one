@@ -195,7 +195,7 @@ void DLL::displayList(DLL::node * top)
  * playerList implements
  */
 
-playersDLL::playersDLL(): handCount(0),DLL()
+playersDLL::playersDLL(): recentDraw(nullptr),handCount(0),DLL()
 {
 }
 
@@ -204,7 +204,9 @@ playersDLL::playersDLL(): handCount(0),DLL()
 
 // then we can just use the playersDLL copy constructor to handle the
 // elements that pretain to the playersDLL
-playersDLL::playersDLL(const playersDLL &playersHand): DLL(playersHand)
+playersDLL::playersDLL(const playersDLL &playersHand): recentDraw(nullptr),
+                                                       handCount(0),
+                                                       DLL(playersHand)
 {
     *this = playersHand;
 }
@@ -214,7 +216,21 @@ playersDLL& playersDLL::operator=(const playersDLL &aPlayersHand)
 {
     if(this == &aPlayersHand)
         return *this;
+
     int copiesHand = 0;
+
+    if(aPlayersHand.recentDraw)
+    {
+        if(recentDraw)
+            delete recentDraw;
+        recentDraw = nullptr;
+        recentDraw = new Bone(*aPlayersHand.recentDraw);
+    }
+    else
+    {
+        recentDraw = nullptr;
+    }
+
     getCount(aPlayersHand, copiesHand); // count the number in the players
     handCount = copiesHand;
 
@@ -224,6 +240,10 @@ playersDLL& playersDLL::operator=(const playersDLL &aPlayersHand)
 
 playersDLL::~playersDLL()
 {
+    if(recentDraw)
+        delete recentDraw;
+
+    recentDraw = nullptr;
     handCount = 0;
 
 }
@@ -241,7 +261,42 @@ void playersDLL::displayList(DLL::node * start)
 {
     if(!start || isEmpty())
         return;
-    cout << start->data << start->recentDraw
+    cout << start->data << " ";
+    // use the ref to the last bone in the hand to display it.
+    recentDraw->printSides();
+    cout << endl;
+
+}
+
+
+DLL::node* playersDLL::findDouble(DLL::node * start)
+{
+    if(!start)
+        return nullptr;
+
+    if(start->data->isDouble())
+        return start;
+
+    if(start->next->data->isDouble())
+        return start->next;
+
+    // skip forward two each iteration, so we can check two nodes at once.
+    findDouble(start->next->next);
+}
+
+
+void playersDLL::getPoints(int &pointTotal)
+{
+    getPoints(getHead(),pointTotal);
+}
+
+
+void playersDLL::getPoints(DLL::node * top, int &points)
+{
+    if(!top)
+        return;
+    points += top->data->getBoneTotal();
+    getPoints(top->next, points);
 }
 
 

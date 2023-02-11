@@ -110,11 +110,11 @@ class playersDLL : public DLL
 private:
 #define HAND_SIZE 7
     int handCount;
-    Bone &recentDraw; // store a ref to the most recent Bone.
+    Bone * recentDraw; // store a pointer to the last drawn bone
 
-    node *findDouble(node *, node *);
+    DLL::node *findDouble(DLL::node *);
 
-    void getPoints(int &);
+    void getPoints(DLL::node *, int &);
 
     virtual void displayList(DLL::node *);
 
@@ -122,7 +122,7 @@ private:
 public:
     playersDLL();
 
-    playersDLL(const playerDLL &);
+    playersDLL(const playersDLL &);
 
     playersDLL & operator=(const playersDLL &);
 
@@ -130,8 +130,7 @@ public:
 
     virtual void display();
 
-    friend ostream & operator<<(const ostream &, const Bone) // have the
-    // bone class implement this instead
+    void getPoints(int &);
 
 
 };
@@ -139,6 +138,9 @@ public:
 class yardsDLL : public DLL
 {
 private:
+#define YARD_SIZE 52
+    int boneCount;
+
 
 public:
 };
